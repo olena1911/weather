@@ -15,7 +15,7 @@ public class WeatherContract {
     private WeatherContract() {
     }
 
-    public static class Weather implements BaseColumns {
+    public static class WeatherEntry implements BaseColumns {
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_WEATHER);
 

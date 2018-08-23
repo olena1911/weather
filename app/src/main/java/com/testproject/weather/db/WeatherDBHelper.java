@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.testproject.weather.db.WeatherContract.Weather;
+import static com.testproject.weather.db.WeatherContract.WeatherEntry;
 
 public class WeatherDBHelper extends SQLiteOpenHelper {
 
@@ -21,12 +21,12 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // TODO? move to the WeatherContract
-        String SQL_CREATE_WEATHER_TABLE =  "CREATE TABLE " + Weather.TABLE_NAME + " ("
-                + Weather._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + Weather.COLUMN_CITY_NAME + " TEXT NOT NULL, "
-                + Weather.COLUMN_TEMPERATURE + " REAL NOT NULL, "
-                + Weather.COLUMN_PRESSURE + " REAL NOT NULL, "
-                + Weather.COLUMN_HUMIDITY + " REAL NOT NULL);";
+        String SQL_CREATE_WEATHER_TABLE =  "CREATE TABLE " + WeatherEntry.TABLE_NAME + " ("
+                + WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + WeatherEntry.COLUMN_CITY_NAME + " TEXT NOT NULL, "
+                + WeatherEntry.COLUMN_TEMPERATURE + " REAL NOT NULL, "
+                + WeatherEntry.COLUMN_PRESSURE + " REAL NOT NULL, "
+                + WeatherEntry.COLUMN_HUMIDITY + " REAL NOT NULL);";
 
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
     }
