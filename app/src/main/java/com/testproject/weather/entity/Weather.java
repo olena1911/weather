@@ -1,10 +1,12 @@
 package com.testproject.weather.entity;
 
+import java.util.Date;
+
 public class Weather {
 
     private long cityId;
     private String cityName;
-    private long time;
+    private Date time;
     private double longitude;
     private double latitude;
     private double temperature;
@@ -15,7 +17,6 @@ public class Weather {
     private double windSpeed;
     private double windDegree;
     private double cloudiness;
-    private double rain;
 
     public long getCityId() {
         return cityId;
@@ -33,11 +34,11 @@ public class Weather {
         this.cityName = cityName;
     }
 
-    public long getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(long time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
@@ -119,14 +120,6 @@ public class Weather {
 
     public void setCloudiness(double cloudiness) {
         this.cloudiness = cloudiness;
-    }
-
-    public double getRain() {
-        return rain;
-    }
-
-    public void setRain(double rain) {
-        this.rain = rain;
     }
 
 }
