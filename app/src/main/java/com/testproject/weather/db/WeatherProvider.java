@@ -10,17 +10,20 @@ import android.net.Uri;
 import android.util.Log;
 
 import static com.testproject.weather.db.WeatherContract.WeatherEntry;
+import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
 public class WeatherProvider extends ContentProvider {
 
     public static final String LOG_TAG = WeatherProvider.class.getSimpleName();
 
     private static final int WEATHER = 100;
+    private static final int PLACES = 101;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sUriMatcher.addURI(WeatherContract.CONTENT_AUTHORITY, WeatherContract.PATH_WEATHER, WEATHER);
+        sUriMatcher.addURI(WeatherContract.CONTENT_AUTHORITY, WeatherContract.PATH_PLACES, PLACES);
    }
 
     private WeatherDBHelper mWeatherDbHelper;
@@ -44,6 +47,10 @@ public class WeatherProvider extends ContentProvider {
                 cursor = database.query(WeatherEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
+            case PLACES:
+                cursor = database.query(PlaceEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+                break;
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
@@ -59,6 +66,8 @@ public class WeatherProvider extends ContentProvider {
         switch (match) {
             case WEATHER:
                 return insertWeather(uri, contentValues);
+            case PLACES:
+                return insertPlace(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
@@ -70,6 +79,24 @@ public class WeatherProvider extends ContentProvider {
         SQLiteDatabase database = mWeatherDbHelper.getWritableDatabase();
 
         long id = database.insert(WeatherEntry.TABLE_NAME, null, values);
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        // Return the new URI with the ID (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(uri, id);
+    }
+
+    private Uri insertPlace(Uri uri, ContentValues values) {
+        // TODO validation
+
+        SQLiteDatabase database = mWeatherDbHelper.getWritableDatabase();
+
+        long id = database.insert(PlaceEntry.TABLE_NAME, null, values);
         // If the ID is -1, then the insertion failed. Log an error and return null.
         if (id == -1) {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
@@ -140,6 +167,8 @@ public class WeatherProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case WEATHER:
+                return WeatherEntry.CONTENT_LIST_TYPE;
+            case PLACES:
                 return WeatherEntry.CONTENT_LIST_TYPE;
             default:
                 throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
