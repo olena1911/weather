@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 public class WeatherListActivity extends Activity {
 
     private RecyclerView mWeatherRecyclerView;
+    private WeatherCursorAdapter mWeatherCursorAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -17,5 +18,8 @@ public class WeatherListActivity extends Activity {
 
         mWeatherRecyclerView = (RecyclerView) findViewById(R.id.list_weather);
         mWeatherRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        mWeatherCursorAdapter = new WeatherCursorAdapter(this, null);
+        mWeatherRecyclerView.setAdapter(mWeatherCursorAdapter);
     }
 }
