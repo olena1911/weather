@@ -30,8 +30,8 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
                 + WeatherEntry.COLUMN_HUMIDITY + " REAL NOT NULL);";
 
         String SQL_CREATE_PLACES_TABLE = "CREATE TABLE " + PlaceEntry.TABLE_NAME + " ("
-                + WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + WeatherEntry.COLUMN_CITY_NAME + " TEXT NOT NULL);";
+                + PlaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + PlaceEntry.COLUMN_CITY_NAME + " TEXT NOT NULL);";
 
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
         db.execSQL(SQL_CREATE_PLACES_TABLE);
@@ -39,6 +39,7 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
     }
 }
 
