@@ -88,13 +88,13 @@ public class WeatherProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case WEATHER:
-                return updatePet(uri, contentValues, selection, selectionArgs);
+                return updateWeather(uri, contentValues, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
     }
 
-    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    private int updateWeather(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         // TODO validation
 
         if (values.size() == 0) {
