@@ -2,14 +2,30 @@ package com.testproject.weather;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.testproject.weather.api.OpenWeatherMapApi;
+import com.testproject.weather.entity.Weather;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.testproject.weather.db.WeatherContract.WeatherEntry;
 
@@ -25,6 +41,14 @@ public class WeatherListActivity extends Activity implements LoaderManager.Loade
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_list);
 
+        Button checkWeatherButton = findViewById(R.id.btn_check_weather);
+        checkWeatherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkWeather();
+            }
+        });
+
         mWeatherRecyclerView = (RecyclerView) findViewById(R.id.list_weather);
         mWeatherRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -32,6 +56,48 @@ public class WeatherListActivity extends Activity implements LoaderManager.Loade
         mWeatherRecyclerView.setAdapter(mWeatherCursorAdapter);
 
         getLoaderManager().initLoader(WEATHER_LOADER_ID, null, this);
+    }
+
+    private void checkWeather() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+
+        WeatherDeserializer deserializer = new WeatherDeserializer();
+        gsonBuilder.registerTypeAdapter(Weather.class, deserializer);
+
+        Gson customGson = gsonBuilder.create();
+
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.openweathermap.org/")
+                .addConverterFactory(GsonConverterFactory.create(customGson))
+                .build();
+
+        OpenWeatherMapApi weatherApi = retrofit.create(OpenWeatherMapApi.class);
+
+        Call<Weather> currentWeatherCall = weatherApi.getCurrentWeather();
+
+        currentWeatherCall.enqueue(new Callback<Weather>() {
+            @Override
+            public void onResponse(Call<Weather> call, Response<Weather> response) {
+                if (response.isSuccessful()) {
+                    Weather currentWeather = response.body();
+
+                    ContentValues values = new ContentValues();
+                    values.put(WeatherEntry.COLUMN_CITY_NAME, currentWeather.getCityName());
+                    values.put(WeatherEntry.COLUMN_TEMPERATURE, currentWeather.getTemperature());
+                    values.put(WeatherEntry.COLUMN_HUMIDITY, currentWeather.getHumidity());
+                    values.put(WeatherEntry.COLUMN_PRESSURE, currentWeather.getPressure());
+                    Uri newUri = getContentResolver().insert(WeatherEntry.CONTENT_URI, values);
+                    Log.d("weatherretrofit", "newuri " + newUri);
+                } else {
+                    // TODO
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Weather> call, Throwable t) {
+                // TODO
+            }
+        });
     }
 
 

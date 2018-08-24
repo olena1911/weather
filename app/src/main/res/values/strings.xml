@@ -8,4 +8,6 @@
     <string name="humidity">Humidity</string>
     <string name="wind">Wind</string>
 
+    <string name="btn_check_weather">Check weather</string>
+
 </resources>
