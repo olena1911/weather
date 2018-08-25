@@ -3,6 +3,7 @@
     package="com.testproject.weather">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name=".PlacesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,12 +24,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".WeatherListActivity"/>
+        <activity android:name=".WeatherListActivity" />
 
         <provider
             android:name=".db.WeatherProvider"
             android:authorities="com.testproject.weather"
             android:exported="false" />
+
     </application>
 
 </manifest>
