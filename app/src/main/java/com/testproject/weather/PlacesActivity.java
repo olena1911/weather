@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -59,10 +60,10 @@ public class PlacesActivity extends AppCompatActivity
 
         mPlacesRecyclerView = (RecyclerView) findViewById(R.id.list_places);
         mPlacesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mPlacesRecyclerView.addItemDecoration(new DividerItemDecoration(mPlacesRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
         mPlacesCursorAdapter = new PlacesCursorAdapter(this, null);
         mPlacesRecyclerView.setAdapter(mPlacesCursorAdapter);
-
         Button addPlaceButton = findViewById(R.id.btn_add_place);
         addPlaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
