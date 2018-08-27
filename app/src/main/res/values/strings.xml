@@ -3,6 +3,9 @@
 
     <string name="activity_title_places">Places</string>
 
+    <string name="appid">5ca364952b79a32581152f088c8d10cb</string>
+    <string name="owp_baseurl">http://api.openweathermap.org/</string>
+
     <string name="date">Date</string>
     <string name="city">City</string>
     <string name="temperature">Temperature</string>

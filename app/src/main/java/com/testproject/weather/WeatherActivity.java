@@ -79,13 +79,13 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
         Gson customGson = gsonBuilder.create();
 
         final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/")
+                .baseUrl(getString(R.string.owp_baseurl))
                 .addConverterFactory(GsonConverterFactory.create(customGson))
                 .build();
 
         OpenWeatherMapApi weatherApi = retrofit.create(OpenWeatherMapApi.class);
 
-        Call<Weather> currentWeatherCall = weatherApi.getCurrentWeather(cityName);
+        Call<Weather> currentWeatherCall = weatherApi.getCurrentWeather(cityName, getString(R.string.appid));
 
         currentWeatherCall.enqueue(new Callback<Weather>() {
             @Override

@@ -8,6 +8,6 @@ import retrofit2.http.Header;
 import retrofit2.http.Query;
 
 public interface OpenWeatherMapApi {
-    @GET("data/2.5/weather?appid=5ca364952b79a32581152f088c8d10cb&units=metric")
-    Call<Weather> getCurrentWeather(@Query("q") String cityName);
+    @GET("data/2.5/weather?units=metric")
+    Call<Weather> getCurrentWeather(@Query("q") String cityName, @Query("appid") String appid);
 }
