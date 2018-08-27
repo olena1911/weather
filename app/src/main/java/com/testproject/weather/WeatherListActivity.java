@@ -1,6 +1,5 @@
 package com.testproject.weather;
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -10,8 +9,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,17 +30,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.testproject.weather.db.WeatherContract.WeatherEntry;
 
-public class WeatherListActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class WeatherListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private RecyclerView mWeatherRecyclerView;
     private WeatherCursorAdapter mWeatherCursorAdapter;
+    private String cityName;
 
     private static final int WEATHER_LOADER_ID = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        cityName = getIntent().getStringExtra("cityName");
         setContentView(R.layout.activity_weather_list);
+
+        try {
+        getSupportActionBar().setTitle(cityName);}
+        catch(Exception e) {
+            Log.d("weatheractivity", e.getMessage());
+        }
 
         Button checkWeatherButton = findViewById(R.id.btn_check_weather);
         checkWeatherButton.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +82,7 @@ public class WeatherListActivity extends Activity implements LoaderManager.Loade
 
         OpenWeatherMapApi weatherApi = retrofit.create(OpenWeatherMapApi.class);
 
-        Call<Weather> currentWeatherCall = weatherApi.getCurrentWeather();
+        Call<Weather> currentWeatherCall = weatherApi.getCurrentWeather(cityName);
 
         currentWeatherCall.enqueue(new Callback<Weather>() {
             @Override
@@ -111,11 +120,15 @@ public class WeatherListActivity extends Activity implements LoaderManager.Loade
                 WeatherEntry.COLUMN_PRESSURE,
                 WeatherEntry.COLUMN_HUMIDITY};
 
+        String selection = WeatherEntry.COLUMN_CITY_NAME + "=?";
+
+        String[] selectionArgs = {cityName};
+
         return new CursorLoader(this,
                 WeatherEntry.CONTENT_URI,
                 projection,
-                null,
-                null,
+                selection,
+                selectionArgs,
                 null);
     }
 

@@ -1,6 +1,7 @@
 package com.testproject.weather;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
@@ -34,8 +36,18 @@ public class PlacesCursorAdapter extends RecyclerView.Adapter<PlacesCursorAdapte
         }
 
         int cityNameColumnIndex = mCursor.getColumnIndex(PlaceEntry.COLUMN_CITY_NAME);
-        String cityName = mCursor.getString(cityNameColumnIndex);
+        final String cityName = mCursor.getString(cityNameColumnIndex);
         placeViewHolder.fillFields(cityName);
+
+        placeViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent weatherIntent = new Intent(mContext, WeatherListActivity.class);
+                weatherIntent.putExtra("cityName", cityName);
+                Toast.makeText(mContext, cityName, Toast.LENGTH_SHORT).show();
+                mContext.startActivity(weatherIntent);
+            }
+        });
     }
 
     @Override
@@ -62,7 +74,9 @@ public class PlacesCursorAdapter extends RecyclerView.Adapter<PlacesCursorAdapte
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
+
             cityNameTextView = (TextView) itemView.findViewById(R.id.places_city_name);
+
         }
 
         public void fillFields(String cityName) {

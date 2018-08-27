@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Weather</string>
 
+    <string name="activity_title_places">Places</string>
+
     <string name="date">Date</string>
     <string name="city">City</string>
     <string name="temperature">Temperature</string>

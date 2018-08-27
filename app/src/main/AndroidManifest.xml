@@ -17,14 +17,16 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".PlacesActivity">
+        <activity android:name=".PlacesActivity"
+            android:label="@string/activity_title_places">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".WeatherListActivity" />
+        <activity android:name=".WeatherListActivity"
+            android:label="@string/activity_title_places"/>
 
         <provider
             android:name=".db.WeatherProvider"

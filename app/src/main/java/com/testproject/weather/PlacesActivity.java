@@ -27,13 +27,10 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceTypes;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.testproject.weather.db.WeatherContract;
 
 import java.util.List;
-import java.util.Locale;
 
 import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
@@ -100,11 +97,6 @@ public class PlacesActivity extends AppCompatActivity
         } catch (Exception e) {
             Log.e(LOG_TAG, String.format("PlacePicker Exception: %s", e.getMessage()));
         }
-
-
-        /*ContentValues values = new ContentValues();
-        values.put(PlaceEntry.COLUMN_CITY_NAME, "London");
-        Uri newUri = getContentResolver().insert(PlaceEntry.CONTENT_URI, values);*/
     }
 
     @Override
