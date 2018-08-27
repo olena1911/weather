@@ -1,5 +1,6 @@
 package com.testproject.weather;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -29,27 +30,32 @@ public class WeatherDeserializer implements JsonDeserializer<Weather> {
         double minTemperature = mainObject.get("temp_min").getAsDouble();
         double maxTemperature = mainObject.get("temp_max").getAsDouble();
 
+        JsonArray weatherArray = weatherJson.get("weather").getAsJsonArray();
+        JsonObject weatherObject = weatherArray.get(0).getAsJsonObject();
+        String weatherIconId = weatherObject.get("icon").getAsString();
+
         JsonObject windObject = weatherJson.get("wind").getAsJsonObject();
         double windSpeed = windObject.get("speed").getAsDouble();
         double windDegree = windObject.get("deg").getAsDouble();
 
         double cloudiness = weatherJson.get("clouds").getAsJsonObject().get("all").getAsDouble();
 
-        Weather weatherObject = new Weather();
-        weatherObject.setCityId(cityId);
-        weatherObject.setCityName(cityName);
-        weatherObject.setTime(time);
-        weatherObject.setLongitude(longitude);
-        weatherObject.setLatitude(latitude);
-        weatherObject.setTemperature(temperature);
-        weatherObject.setPressure(pressure);
-        weatherObject.setHumidity(humidity);
-        weatherObject.setMinTemperature(minTemperature);
-        weatherObject.setMaxTemperature(maxTemperature);
-        weatherObject.setWindSpeed(windSpeed);
-        weatherObject.setWindDegree(windDegree);
-        weatherObject.setCloudiness(cloudiness);
+        Weather weather = new Weather();
+        weather.setCityId(cityId);
+        weather.setCityName(cityName);
+        weather.setTime(time);
+        weather.setLongitude(longitude);
+        weather.setLatitude(latitude);
+        weather.setTemperature(temperature);
+        weather.setPressure(pressure);
+        weather.setHumidity(humidity);
+        weather.setMinTemperature(minTemperature);
+        weather.setMaxTemperature(maxTemperature);
+        weather.setWindSpeed(windSpeed);
+        weather.setWindDegree(windDegree);
+        weather.setCloudiness(cloudiness);
+        weather.setWeatherIconId(weatherIconId);
 
-        return weatherObject;
+        return weather;
     }
 }

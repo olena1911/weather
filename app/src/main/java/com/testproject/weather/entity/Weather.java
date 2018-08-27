@@ -17,6 +17,7 @@ public class Weather {
     private double windSpeed;
     private double windDegree;
     private double cloudiness;
+    private String weatherIconId;
 
     public long getCityId() {
         return cityId;
@@ -120,6 +121,14 @@ public class Weather {
 
     public void setCloudiness(double cloudiness) {
         this.cloudiness = cloudiness;
+    }
+
+    public String getWeatherIconId() {
+        return weatherIconId;
+    }
+
+    public void setWeatherIconId(String weatherIconId) {
+        this.weatherIconId = weatherIconId;
     }
 
 }

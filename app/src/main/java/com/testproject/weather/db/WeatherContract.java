@@ -40,6 +40,7 @@ public class WeatherContract {
         public static final String COLUMN_WIND_SPEED = "wind_speed";
         public static final String COLUMN_WIND_DEGREE = "wind_degree";
         public static final String COLUMN_CLOUDINESS = "cloudiness";
+        public static final String COLUMN_WEATHER_ICON_ID = "weather_icon_id";
     }
 
     public static class PlaceEntry implements BaseColumns {

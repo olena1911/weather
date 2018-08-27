@@ -95,6 +95,7 @@ public class WeatherListActivity extends AppCompatActivity implements LoaderMana
                     values.put(WeatherEntry.COLUMN_TEMPERATURE, currentWeather.getTemperature());
                     values.put(WeatherEntry.COLUMN_HUMIDITY, currentWeather.getHumidity());
                     values.put(WeatherEntry.COLUMN_PRESSURE, currentWeather.getPressure());
+                    values.put(WeatherEntry.COLUMN_WEATHER_ICON_ID, currentWeather.getWeatherIconId());
                     Uri newUri = getContentResolver().insert(WeatherEntry.CONTENT_URI, values);
                     Log.d("weatherretrofit", "newuri " + newUri);
                 } else {
@@ -118,7 +119,9 @@ public class WeatherListActivity extends AppCompatActivity implements LoaderMana
                 WeatherEntry.COLUMN_CITY_NAME,
                 WeatherEntry.COLUMN_TEMPERATURE,
                 WeatherEntry.COLUMN_PRESSURE,
-                WeatherEntry.COLUMN_HUMIDITY};
+                WeatherEntry.COLUMN_HUMIDITY,
+                WeatherEntry.COLUMN_WEATHER_ICON_ID
+        };
 
         String selection = WeatherEntry.COLUMN_CITY_NAME + "=?";
 
