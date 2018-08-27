@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
@@ -42,7 +41,7 @@ public class PlacesCursorAdapter extends RecyclerView.Adapter<PlacesCursorAdapte
         placeViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent weatherIntent = new Intent(mContext, WeatherListActivity.class);
+                Intent weatherIntent = new Intent(mContext, WeatherActivity.class);
                 weatherIntent.putExtra("cityName", cityName);
                 mContext.startActivity(weatherIntent);
             }

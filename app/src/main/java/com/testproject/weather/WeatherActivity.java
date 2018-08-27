@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +30,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.testproject.weather.db.WeatherContract.WeatherEntry;
 
-public class WeatherListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class WeatherActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    public static final String LOG_TAG = WeatherActivity.class.getSimpleName();
 
     private RecyclerView mWeatherRecyclerView;
     private WeatherCursorAdapter mWeatherCursorAdapter;

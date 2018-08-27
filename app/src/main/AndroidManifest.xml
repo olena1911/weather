@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".WeatherListActivity"
+        <activity android:name=".WeatherActivity"
             android:label="@string/activity_title_places"/>
 
         <provider
