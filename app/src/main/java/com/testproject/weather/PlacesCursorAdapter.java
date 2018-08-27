@@ -44,7 +44,6 @@ public class PlacesCursorAdapter extends RecyclerView.Adapter<PlacesCursorAdapte
             public void onClick(View view) {
                 Intent weatherIntent = new Intent(mContext, WeatherListActivity.class);
                 weatherIntent.putExtra("cityName", cityName);
-                Toast.makeText(mContext, cityName, Toast.LENGTH_SHORT).show();
                 mContext.startActivity(weatherIntent);
             }
         });

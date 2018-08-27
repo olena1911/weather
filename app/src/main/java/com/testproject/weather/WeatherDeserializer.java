@@ -1,5 +1,7 @@
 package com.testproject.weather;
 
+import android.util.Log;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -19,7 +21,8 @@ public class WeatherDeserializer implements JsonDeserializer<Weather> {
 
         long cityId = weatherJson.get("id").getAsLong();
         String cityName = weatherJson.get("name").getAsString();
-        Date time = new Date(weatherJson.get("dt").getAsLong());
+
+        long time = new Date().getTime();
         double longitude = weatherJson.getAsJsonObject("coord").get("lon").getAsDouble();
         double latitude = weatherJson.getAsJsonObject("coord").get("lat").getAsDouble();;
 

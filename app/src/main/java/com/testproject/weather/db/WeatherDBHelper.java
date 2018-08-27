@@ -24,11 +24,13 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
         // TODO? move to the WeatherContract
         String SQL_CREATE_WEATHER_TABLE =  "CREATE TABLE " + WeatherEntry.TABLE_NAME + " ("
                 + WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + WeatherEntry.COLUMN_TIME + " INTEGER, "
                 + WeatherEntry.COLUMN_CITY_NAME + " TEXT NOT NULL, "
                 + WeatherEntry.COLUMN_TEMPERATURE + " REAL NOT NULL, "
                 + WeatherEntry.COLUMN_PRESSURE + " REAL NOT NULL, "
                 + WeatherEntry.COLUMN_HUMIDITY + " REAL NOT NULL, "
-                + WeatherEntry.COLUMN_WEATHER_ICON_ID + " REAL NOT NULL)";
+                + WeatherEntry.COLUMN_WEATHER_ICON_ID + " REAL NOT NULL, "
+                + WeatherEntry.COLUMN_WIND_SPEED + " REAL NOT NULL)";
 
         String SQL_CREATE_PLACES_TABLE = "CREATE TABLE " + PlaceEntry.TABLE_NAME + " ("
                 + PlaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "

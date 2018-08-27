@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.testproject.weather.db.WeatherContract.WeatherEntry;
 
@@ -36,19 +40,25 @@ public class WeatherCursorAdapter extends RecyclerView.Adapter<WeatherCursorAdap
             return;
         }
 
-        int cityNameColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_CITY_NAME);
-        int temperatureColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_TEMPERATURE);
-        int pressureColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_PRESSURE);
-        int humidityColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_HUMIDITY);
+        int timeColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_TIME);
         int weatherIconIdIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_WEATHER_ICON_ID);
+        int temperatureColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_TEMPERATURE);
+        int humidityColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_HUMIDITY);
+        int pressureColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_PRESSURE);
+        int windSpeedColumnIndex = mCursor.getColumnIndex(WeatherEntry.COLUMN_WIND_SPEED);
 
-        String cityName = mCursor.getString(cityNameColumnIndex);
-        String temperature = String.valueOf(mCursor.getDouble(temperatureColumnIndex));
-        String pressure = String.valueOf(mCursor.getDouble(pressureColumnIndex));
-        String humidity = String.valueOf(mCursor.getDouble(humidityColumnIndex));
+        long time = mCursor.getLong(timeColumnIndex);
+        Date date = new Date(time);
+        String dateString =  new SimpleDateFormat("MMM dd").format(date);
+        String timeString =  new SimpleDateFormat("HH:mm").format(date);
+
         String weatherIconId = mCursor.getString(weatherIconIdIndex);
+        String temperature = String.valueOf(mCursor.getDouble(temperatureColumnIndex)) + " \u2103";
+        String humidity = String.valueOf(mCursor.getDouble(humidityColumnIndex)) + " %";
+        String pressure = String.valueOf(mCursor.getDouble(pressureColumnIndex)) + " hPa";
+        String windSpeed = String.valueOf(mCursor.getDouble(windSpeedColumnIndex)) + " m/s";
 
-        weatherViewHolder.fillFields(cityName, temperature, pressure, humidity, weatherIconId);
+        weatherViewHolder.fillFields(dateString, timeString, weatherIconId, temperature, humidity, pressure, windSpeed);
     }
 
     @Override
@@ -69,29 +79,35 @@ public class WeatherCursorAdapter extends RecyclerView.Adapter<WeatherCursorAdap
         }
     }
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView cityNameTextView;
+        private TextView dateTextView;
+        private TextView timeTextView;
         private TextView temperatureTextView;
         private TextView pressureTextView;
         private TextView humidityTextView;
         private ImageView weatherIconImageView;
+        private TextView windSpeedTextView;
 
         public WeatherViewHolder(View itemView) {
             super(itemView);
-
-            cityNameTextView = (TextView) itemView.findViewById(R.id.city_name);
-            temperatureTextView = (TextView) itemView.findViewById(R.id.temperature);
-            pressureTextView = (TextView) itemView.findViewById(R.id.pressure);
-            humidityTextView = (TextView) itemView.findViewById(R.id.humidity);
-            weatherIconImageView = (ImageView) itemView.findViewById(R.id.weather_icon);
+            dateTextView = itemView.findViewById(R.id.text_date);
+            timeTextView = itemView.findViewById(R.id.text_time);
+            temperatureTextView = itemView.findViewById(R.id.text_temperature);
+            pressureTextView = itemView.findViewById(R.id.text_pressure);
+            humidityTextView = itemView.findViewById(R.id.text_humidity);
+            weatherIconImageView = itemView.findViewById(R.id.image_weather_icon);
+            windSpeedTextView = itemView.findViewById(R.id.text_wind_speed);
         }
 
-        public void fillFields(String cityName, String temperature, String pressure, String humidity, String weatherIconId) {
-            cityNameTextView.setText(cityName);
+        public void fillFields(String dateString, String timeString, String weatherIconId,
+                               String temperature, String humidity, String pressure,
+                               String windSpeed) {
+            dateTextView.setText(dateString);
+            timeTextView.setText(timeString);
+            Picasso.get().load("http://openweathermap.org/img/w/" + weatherIconId + ".png").fit().centerInside().into(weatherIconImageView);
             temperatureTextView.setText(temperature);
             pressureTextView.setText(pressure);
             humidityTextView.setText(humidity);
-            Picasso.get().load("http://openweathermap.org/img/w/" + weatherIconId + ".png").into(weatherIconImageView);
+            windSpeedTextView.setText(windSpeed);
         }
     }
 }

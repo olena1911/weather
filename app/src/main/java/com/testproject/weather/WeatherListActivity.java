@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -60,6 +61,7 @@ public class WeatherListActivity extends AppCompatActivity implements LoaderMana
 
         mWeatherRecyclerView = (RecyclerView) findViewById(R.id.list_weather);
         mWeatherRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mWeatherRecyclerView.addItemDecoration(new DividerItemDecoration(mWeatherRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
         mWeatherCursorAdapter = new WeatherCursorAdapter(this, null);
         mWeatherRecyclerView.setAdapter(mWeatherCursorAdapter);
@@ -91,11 +93,13 @@ public class WeatherListActivity extends AppCompatActivity implements LoaderMana
                     Weather currentWeather = response.body();
 
                     ContentValues values = new ContentValues();
+                    values.put(WeatherEntry.COLUMN_TIME, currentWeather.getTime());
                     values.put(WeatherEntry.COLUMN_CITY_NAME, currentWeather.getCityName());
                     values.put(WeatherEntry.COLUMN_TEMPERATURE, currentWeather.getTemperature());
                     values.put(WeatherEntry.COLUMN_HUMIDITY, currentWeather.getHumidity());
                     values.put(WeatherEntry.COLUMN_PRESSURE, currentWeather.getPressure());
                     values.put(WeatherEntry.COLUMN_WEATHER_ICON_ID, currentWeather.getWeatherIconId());
+                    values.put(WeatherEntry.COLUMN_WIND_SPEED, currentWeather.getWindSpeed());
                     Uri newUri = getContentResolver().insert(WeatherEntry.CONTENT_URI, values);
                     Log.d("weatherretrofit", "newuri " + newUri);
                 } else {
@@ -116,23 +120,27 @@ public class WeatherListActivity extends AppCompatActivity implements LoaderMana
     public Loader<Cursor> onCreateLoader(int i, @Nullable Bundle bundle) {
         String[] projection = {
                 WeatherEntry._ID,
+                WeatherEntry.COLUMN_TIME,
                 WeatherEntry.COLUMN_CITY_NAME,
                 WeatherEntry.COLUMN_TEMPERATURE,
                 WeatherEntry.COLUMN_PRESSURE,
                 WeatherEntry.COLUMN_HUMIDITY,
-                WeatherEntry.COLUMN_WEATHER_ICON_ID
+                WeatherEntry.COLUMN_WEATHER_ICON_ID,
+                WeatherEntry.COLUMN_WIND_SPEED
         };
 
         String selection = WeatherEntry.COLUMN_CITY_NAME + "=?";
 
         String[] selectionArgs = {cityName};
 
+        String sortOrder = WeatherEntry.COLUMN_TIME + " DESC";
+
         return new CursorLoader(this,
                 WeatherEntry.CONTENT_URI,
                 projection,
                 selection,
                 selectionArgs,
-                null);
+                sortOrder);
     }
 
     @Override

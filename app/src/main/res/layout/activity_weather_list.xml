@@ -5,17 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".WeatherListActivity">
+    tools:context=".WeatherListActivity"
+    android:gravity="center_horizontal"
+    android:layout_marginBottom="8dp">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_weather"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="5"/>
+
 
     <Button
         android:id="@+id/btn_check_weather"
         android:text="@string/btn_check_weather"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_weather"
-        android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
 </LinearLayout>
