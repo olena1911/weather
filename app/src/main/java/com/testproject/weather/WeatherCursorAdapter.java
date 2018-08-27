@@ -58,7 +58,7 @@ public class WeatherCursorAdapter extends RecyclerView.Adapter<WeatherCursorAdap
         String pressure = String.valueOf(mCursor.getDouble(pressureColumnIndex)) + " hPa";
         String windSpeed = String.valueOf(mCursor.getDouble(windSpeedColumnIndex)) + " m/s";
 
-        weatherViewHolder.fillFields(dateString, timeString, weatherIconId, temperature, humidity, pressure, windSpeed);
+        weatherViewHolder.bindFields(dateString, timeString, weatherIconId, temperature, humidity, pressure, windSpeed);
     }
 
     @Override
@@ -78,6 +78,7 @@ public class WeatherCursorAdapter extends RecyclerView.Adapter<WeatherCursorAdap
             notifyDataSetChanged();
         }
     }
+
     public class WeatherViewHolder extends RecyclerView.ViewHolder {
         private TextView dateTextView;
         private TextView timeTextView;
@@ -98,12 +99,16 @@ public class WeatherCursorAdapter extends RecyclerView.Adapter<WeatherCursorAdap
             windSpeedTextView = itemView.findViewById(R.id.text_wind_speed);
         }
 
-        public void fillFields(String dateString, String timeString, String weatherIconId,
+        public void bindFields(String dateString, String timeString, String weatherIconId,
                                String temperature, String humidity, String pressure,
                                String windSpeed) {
             dateTextView.setText(dateString);
             timeTextView.setText(timeString);
-            Picasso.get().load("http://openweathermap.org/img/w/" + weatherIconId + ".png").fit().centerInside().into(weatherIconImageView);
+            Picasso.get().load(
+                    itemView.getContext().getString(R.string.owp_weather_icon_path)
+                            + weatherIconId
+                            + itemView.getContext().getString(R.string.owp_weather_icon_extension))
+                    .fit().centerInside().into(weatherIconImageView);
             temperatureTextView.setText(temperature);
             pressureTextView.setText(pressure);
             humidityTextView.setText(humidity);

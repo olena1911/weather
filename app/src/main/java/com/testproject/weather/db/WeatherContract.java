@@ -4,6 +4,9 @@ import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * Class-contract that describes weather.db.
+ */
 public class WeatherContract {
 
     public static final String CONTENT_AUTHORITY = "com.testproject.weather";
@@ -26,21 +29,14 @@ public class WeatherContract {
         public static final String TABLE_NAME = "weather";
 
         public final static String _ID = BaseColumns._ID;
-
-        public static final String COLUMN_CITY_NAME = "city_name";
-        public static final String COLUMN_CITY_ID = "city_id";
         public static final String COLUMN_TIME = "time";
-        public static final String COLUMN_LONGITUDE = "longitude";
-        public static final String COLUMN_LATITUDE = "latitude";
-        public static final String COLUMN_TEMPERATURE = "temperature";
-        public static final String COLUMN_PRESSURE = "pressure";
-        public static final String COLUMN_HUMIDITY = "humidity";
-        public static final String COLUMN_MIN_TEMPERATURE = "min_temperature";
-        public static final String COLUMN_MAX_TEMPERATURE = "max_temperature";
-        public static final String COLUMN_WIND_SPEED = "wind_speed";
-        public static final String COLUMN_WIND_DEGREE = "wind_degree";
-        public static final String COLUMN_CLOUDINESS = "cloudiness";
+        public static final String COLUMN_CITY_NAME = "city_name";
         public static final String COLUMN_WEATHER_ICON_ID = "weather_icon_id";
+        public static final String COLUMN_TEMPERATURE = "temperature";
+        public static final String COLUMN_HUMIDITY = "humidity";
+        public static final String COLUMN_PRESSURE = "pressure";
+        public static final String COLUMN_WIND_SPEED = "wind_speed";
+
     }
 
     public static class PlaceEntry implements BaseColumns {
@@ -53,7 +49,6 @@ public class WeatherContract {
         public static final String TABLE_NAME = "places";
 
         public final static String _ID = BaseColumns._ID;
-
         public static final String COLUMN_CITY_NAME = "city_name";
     }
 }

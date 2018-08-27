@@ -72,8 +72,7 @@ public class PlacesCursorAdapter extends RecyclerView.Adapter<PlacesCursorAdapte
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
-
-            cityNameTextView = (TextView) itemView.findViewById(R.id.places_city_name);
+            cityNameTextView = itemView.findViewById(R.id.places_city_name);
 
         }
 

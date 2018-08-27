@@ -12,6 +12,9 @@ import android.util.Log;
 import static com.testproject.weather.db.WeatherContract.WeatherEntry;
 import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
+/**
+ * Class-provider to work with weather.db.
+ */
 public class WeatherProvider extends ContentProvider {
 
     public static final String LOG_TAG = WeatherProvider.class.getSimpleName();
@@ -52,6 +55,7 @@ public class WeatherProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             default:
+                Log.e(LOG_TAG, "Cannot query unknown URI " + uri);
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
 
@@ -69,16 +73,16 @@ public class WeatherProvider extends ContentProvider {
             case PLACES:
                 return insertPlace(uri, contentValues);
             default:
+                Log.e(LOG_TAG, "Insertion is not supported for " + uri);
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
     }
 
     private Uri insertWeather(Uri uri, ContentValues values) {
-        // TODO validation
-
         SQLiteDatabase database = mWeatherDbHelper.getWritableDatabase();
 
         long id = database.insert(WeatherEntry.TABLE_NAME, null, values);
+
         // If the ID is -1, then the insertion failed. Log an error and return null.
         if (id == -1) {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
@@ -92,11 +96,10 @@ public class WeatherProvider extends ContentProvider {
     }
 
     private Uri insertPlace(Uri uri, ContentValues values) {
-        // TODO validation
-
         SQLiteDatabase database = mWeatherDbHelper.getWritableDatabase();
 
         long id = database.insert(PlaceEntry.TABLE_NAME, null, values);
+
         // If the ID is -1, then the insertion failed. Log an error and return null.
         if (id == -1) {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
@@ -116,26 +119,37 @@ public class WeatherProvider extends ContentProvider {
         switch (match) {
             case WEATHER:
                 return updateWeather(uri, contentValues, selection, selectionArgs);
+            case PLACES:
+                return updatePlace(uri, contentValues, selection, selectionArgs);
             default:
+                Log.e(LOG_TAG, "Update is not supported for " + uri);
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
     }
 
     private int updateWeather(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // TODO validation
-
         if (values.size() == 0) {
             return 0;
         }
 
         SQLiteDatabase database = mWeatherDbHelper.getWritableDatabase();
-
         int rowsUpdated = database.update(WeatherEntry.TABLE_NAME, values, selection, selectionArgs);
-
         if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
+        return rowsUpdated;
+    }
 
+    private int updatePlace(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        SQLiteDatabase database = mWeatherDbHelper.getWritableDatabase();
+        int rowsUpdated = database.update(PlaceEntry.TABLE_NAME, values, selection, selectionArgs);
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return rowsUpdated;
     }
 
@@ -148,10 +162,13 @@ public class WeatherProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case WEATHER:
-                // Delete all rows that match the selection and selection args
                 rowsDeleted = database.delete(WeatherEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case PLACES:
+                rowsDeleted = database.delete(PlaceEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
+                Log.e(LOG_TAG, "Deletion is not supported for " + uri);
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
 
@@ -169,8 +186,9 @@ public class WeatherProvider extends ContentProvider {
             case WEATHER:
                 return WeatherEntry.CONTENT_LIST_TYPE;
             case PLACES:
-                return WeatherEntry.CONTENT_LIST_TYPE;
+                return PlaceEntry.CONTENT_LIST_TYPE;
             default:
+                Log.e(LOG_TAG, "Unknown URI " + uri + " with match " + match);
                 throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
         }
     }

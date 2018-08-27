@@ -45,12 +45,7 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         cityName = getIntent().getStringExtra("cityName");
         setContentView(R.layout.activity_weather_list);
-
-        try {
-        getSupportActionBar().setTitle(cityName);}
-        catch(Exception e) {
-            Log.d("weatheractivity", e.getMessage());
-        }
+        getSupportActionBar().setTitle(cityName);
 
         Button checkWeatherButton = findViewById(R.id.btn_check_weather);
         checkWeatherButton.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +55,7 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        mWeatherRecyclerView = (RecyclerView) findViewById(R.id.list_weather);
+        mWeatherRecyclerView = findViewById(R.id.list_weather);
         mWeatherRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mWeatherRecyclerView.addItemDecoration(new DividerItemDecoration(mWeatherRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
@@ -102,15 +97,14 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
                     values.put(WeatherEntry.COLUMN_WEATHER_ICON_ID, currentWeather.getWeatherIconId());
                     values.put(WeatherEntry.COLUMN_WIND_SPEED, currentWeather.getWindSpeed());
                     Uri newUri = getContentResolver().insert(WeatherEntry.CONTENT_URI, values);
-                    Log.d("weatherretrofit", "newuri " + newUri);
                 } else {
-                    // TODO
+                    Log.e(LOG_TAG, "Response is not successful.");
                 }
             }
 
             @Override
             public void onFailure(Call<Weather> call, Throwable t) {
-                // TODO
+                Log.e(LOG_TAG, "Fail to connect to weather API: " + t.getMessage());
             }
         });
     }
@@ -134,6 +128,7 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
         String[] selectionArgs = {cityName};
 
+        // Show new weather first
         String sortOrder = WeatherEntry.COLUMN_TIME + " DESC";
 
         return new CursorLoader(this,

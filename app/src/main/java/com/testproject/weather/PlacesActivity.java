@@ -1,8 +1,10 @@
 package com.testproject.weather;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
@@ -17,8 +19,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -55,12 +59,13 @@ public class PlacesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_places);
 
-        mPlacesRecyclerView = (RecyclerView) findViewById(R.id.list_places);
+        mPlacesRecyclerView = findViewById(R.id.list_places);
         mPlacesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mPlacesRecyclerView.addItemDecoration(new DividerItemDecoration(mPlacesRecyclerView.getContext(), DividerItemDecoration.VERTICAL));
 
         mPlacesCursorAdapter = new PlacesCursorAdapter(this, null);
         mPlacesRecyclerView.setAdapter(mPlacesCursorAdapter);
+
         Button addPlaceButton = findViewById(R.id.btn_add_place);
         addPlaceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,24 +106,35 @@ public class PlacesActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-           if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
-               Place place = PlacePicker.getPlace(this, data);
-                if (place == null) {
-                    Log.i(LOG_TAG, "No place selected");
-                    return;
-                }
-
-               String cityName = place.getName().toString();
-               List<Integer> placeTypes = place.getPlaceTypes();
-               if (!placeTypes.contains(TYPE_LOCALITY)) {
-                   Log.d(LOG_TAG, "Only cities should be selected");
-                   return;
-               }
-
-               ContentValues values = new ContentValues();
-               values.put(PlaceEntry.COLUMN_CITY_NAME, cityName);
-               Uri newUri = getContentResolver().insert(PlaceEntry.CONTENT_URI, values);
+        if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
+            Place place = PlacePicker.getPlace(this, data);
+            if (place == null) {
+                Log.i(LOG_TAG, "No place selected");
+                return;
             }
+
+            String cityName = place.getName().toString();
+            List<Integer> placeTypes = place.getPlaceTypes();
+            if (!placeTypes.contains(TYPE_LOCALITY)) {
+                Log.d(LOG_TAG, "Only cities should be selected");
+                final AlertDialog.Builder builder = new AlertDialog.Builder(PlacesActivity.this);
+                builder.setMessage(getString(R.string.info_select_cities));
+
+                builder.setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return;
+            }
+
+            ContentValues values = new ContentValues();
+            values.put(PlaceEntry.COLUMN_CITY_NAME, cityName);
+            Uri newUri = getContentResolver().insert(PlaceEntry.CONTENT_URI, values);
+        }
     }
 
     @NonNull
@@ -148,7 +164,6 @@ public class PlacesActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle connectionHint) {
-        // TODO refreshPlacesData();
         Log.i(LOG_TAG, "API Client Connection Successful!");
     }
 
@@ -161,6 +176,5 @@ public class PlacesActivity extends AppCompatActivity
     public void onConnectionFailed(@NonNull ConnectionResult result) {
         Log.e(LOG_TAG, "API Client Connection Failed!");
     }
-
 
 }

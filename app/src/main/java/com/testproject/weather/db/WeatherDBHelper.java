@@ -3,10 +3,14 @@ package com.testproject.weather.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import static com.testproject.weather.db.WeatherContract.WeatherEntry;
 import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
+/**
+ * Class-helper to create database.
+ */
 public class WeatherDBHelper extends SQLiteOpenHelper {
 
     public static final String LOG_TAG = WeatherDBHelper.class.getSimpleName();
@@ -21,7 +25,6 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // TODO? move to the WeatherContract
         String SQL_CREATE_WEATHER_TABLE =  "CREATE TABLE " + WeatherEntry.TABLE_NAME + " ("
                 + WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + WeatherEntry.COLUMN_TIME + " INTEGER, "
@@ -37,12 +40,13 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
                 + PlaceEntry.COLUMN_CITY_NAME + " TEXT NOT NULL);";
 
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
+        Log.i(LOG_TAG, "Weather table is created");
         db.execSQL(SQL_CREATE_PLACES_TABLE);
+        Log.i(LOG_TAG, "Places table is created");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 }
 
