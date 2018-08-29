@@ -12,27 +12,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".PlacesActivity"
+        <activity
+            android:name=".PlacesActivity"
             android:label="@string/activity_title_places">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".WeatherActivity"
-            android:label="@string/activity_title_places"/>
+        <activity
+            android:name=".WeatherActivity"
+            android:label="@string/activity_title_places" />
 
         <provider
             android:name=".db.WeatherProvider"
             android:authorities="com.testproject.weather"
             android:exported="false" />
 
+        <activity
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map"></activity>
     </application>
 
 </manifest>

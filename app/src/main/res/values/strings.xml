@@ -17,7 +17,10 @@
 
     <string name="info_select_cities">Only cities should be selected</string>
 
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
     <string name="btn_check_weather">Check weather</string>
     <string name="btn_add_place">Add place</string>
+    <string name="title_activity_map">Map</string>
 
 </resources>

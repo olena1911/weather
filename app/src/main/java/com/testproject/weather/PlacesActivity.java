@@ -91,17 +91,8 @@ public class PlacesActivity extends AppCompatActivity
             Toast.makeText(this, "Need location permission", Toast.LENGTH_LONG).show();
             return;
         }
-        try {
-            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-            Intent i = builder.build(this);
-            startActivityForResult(i, PLACE_PICKER_REQUEST);
-        } catch (GooglePlayServicesRepairableException e) {
-            Log.e(LOG_TAG, String.format("GooglePlayServices Not Available [%s]", e.getMessage()));
-        } catch (GooglePlayServicesNotAvailableException e) {
-            Log.e(LOG_TAG, String.format("GooglePlayServices Not Available [%s]", e.getMessage()));
-        } catch (Exception e) {
-            Log.e(LOG_TAG, String.format("PlacePicker Exception: %s", e.getMessage()));
-        }
+        Intent mapIntent = new Intent(this, MapActivity.class);
+        startActivity(mapIntent);
     }
 
     @Override
