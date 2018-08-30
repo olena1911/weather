@@ -30,7 +30,7 @@ public class WeatherContract {
 
         public final static String _ID = BaseColumns._ID;
         public static final String COLUMN_TIME = "time";
-        public static final String COLUMN_CITY_NAME = "city_name";
+        public static final String COLUMN_PLACE_ID = "place_id";
         public static final String COLUMN_WEATHER_ICON_ID = "weather_icon_id";
         public static final String COLUMN_TEMPERATURE = "temperature";
         public static final String COLUMN_HUMIDITY = "humidity";
@@ -49,6 +49,8 @@ public class WeatherContract {
         public static final String TABLE_NAME = "places";
 
         public final static String _ID = BaseColumns._ID;
-        public static final String COLUMN_CITY_NAME = "city_name";
+        public static final String COLUMN_PLACE_NAME = "place_name";
+        public static final String COLUMN_LATITUDE = "latitude";
+        public static final String COLUMN_LONGITUDE = "longitude";
     }
 }

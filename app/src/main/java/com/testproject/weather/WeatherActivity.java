@@ -3,6 +3,7 @@ package com.testproject.weather;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,16 +37,23 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
     private RecyclerView mWeatherRecyclerView;
     private WeatherCursorAdapter mWeatherCursorAdapter;
-    private String cityName;
+    private String placeName;
+    private int placeId;
+    private double latitude;
+    private double longitude;
 
     private static final int WEATHER_LOADER_ID = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cityName = getIntent().getStringExtra("cityName");
+        Intent weatherIntent = getIntent();
+        placeName = weatherIntent.getStringExtra("placeName");
+        placeId = weatherIntent.getIntExtra("placeId", -1);
+        latitude = weatherIntent.getDoubleExtra("latitude", -1);
+        longitude = weatherIntent.getDoubleExtra("longitude", -1);
         setContentView(R.layout.activity_weather_list);
-        getSupportActionBar().setTitle(cityName);
+        getSupportActionBar().setTitle(placeName);
 
         Button checkWeatherButton = findViewById(R.id.btn_check_weather);
         checkWeatherButton.setOnClickListener(new View.OnClickListener() {
@@ -67,10 +75,8 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
     private void checkWeather() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-
         WeatherDeserializer deserializer = new WeatherDeserializer();
         gsonBuilder.registerTypeAdapter(Weather.class, deserializer);
-
         Gson customGson = gsonBuilder.create();
 
         final Retrofit retrofit = new Retrofit.Builder()
@@ -80,7 +86,11 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
         OpenWeatherMapApi weatherApi = retrofit.create(OpenWeatherMapApi.class);
 
-        Call<Weather> currentWeatherCall = weatherApi.getCurrentWeather(cityName, getString(R.string.appid));
+        Call<Weather> currentWeatherCall
+                = weatherApi.getCurrentWeather(
+                        String.valueOf(latitude),
+                        String.valueOf(longitude),
+                        getString(R.string.appid));
 
         currentWeatherCall.enqueue(new Callback<Weather>() {
             @Override
@@ -90,7 +100,7 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
 
                     ContentValues values = new ContentValues();
                     values.put(WeatherEntry.COLUMN_TIME, currentWeather.getTime());
-                    values.put(WeatherEntry.COLUMN_CITY_NAME, currentWeather.getCityName());
+                    values.put(WeatherEntry.COLUMN_PLACE_ID, placeId);
                     values.put(WeatherEntry.COLUMN_TEMPERATURE, currentWeather.getTemperature());
                     values.put(WeatherEntry.COLUMN_HUMIDITY, currentWeather.getHumidity());
                     values.put(WeatherEntry.COLUMN_PRESSURE, currentWeather.getPressure());
@@ -109,14 +119,13 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
         });
     }
 
-
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int i, @Nullable Bundle bundle) {
         String[] projection = {
                 WeatherEntry._ID,
                 WeatherEntry.COLUMN_TIME,
-                WeatherEntry.COLUMN_CITY_NAME,
+                WeatherEntry.COLUMN_PLACE_ID,
                 WeatherEntry.COLUMN_TEMPERATURE,
                 WeatherEntry.COLUMN_PRESSURE,
                 WeatherEntry.COLUMN_HUMIDITY,
@@ -124,9 +133,9 @@ public class WeatherActivity extends AppCompatActivity implements LoaderManager.
                 WeatherEntry.COLUMN_WIND_SPEED
         };
 
-        String selection = WeatherEntry.COLUMN_CITY_NAME + "=?";
+        String selection = WeatherEntry.COLUMN_PLACE_ID + "=?";
 
-        String[] selectionArgs = {cityName};
+        String[] selectionArgs = {String.valueOf(placeId)};
 
         // Show new weather first
         String sortOrder = WeatherEntry.COLUMN_TIME + " DESC";

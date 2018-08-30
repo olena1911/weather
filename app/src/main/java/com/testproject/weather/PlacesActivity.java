@@ -1,14 +1,16 @@
 package com.testproject.weather;
 
-import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,40 +21,37 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.testproject.weather.db.WeatherContract;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
 public class PlacesActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     public static final String LOG_TAG = PlacesActivity.class.getSimpleName();
 
     private RecyclerView mPlacesRecyclerView;
     private PlacesCursorAdapter mPlacesCursorAdapter;
+    private LatLng currentMarkerPosition;
 
     private GoogleApiClient mClient;
 
     private static final int PLACES_LOADER_ID = 0;
-    private static final int PLACE_PICKER_REQUEST = 100;
-    public static final int TYPE_LOCALITY = 1009;
+    private static final int ADD_PLACE_REQUEST = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +82,25 @@ public class PlacesActivity extends AppCompatActivity
                 .addApi(Places.GEO_DATA_API)
                 .enableAutoManage(this, this)
                 .build();
+        if (savedInstanceState != null) {
+            currentMarkerPosition = savedInstanceState.getParcelable("currentMarkerPosition");
+        } else {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            try {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            } catch (SecurityException e) {
+                // TODO remove it
+            }
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (currentMarkerPosition != null) {
+            outState.putParcelable("currentMarkerPosition", currentMarkerPosition);
+        }
     }
 
     public void addPlace() {
@@ -92,39 +110,25 @@ public class PlacesActivity extends AppCompatActivity
             return;
         }
         Intent mapIntent = new Intent(this, MapActivity.class);
-        startActivity(mapIntent);
+        mapIntent.putExtra("currentMarkerPosition", currentMarkerPosition);
+        startActivityForResult(mapIntent, ADD_PLACE_REQUEST);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == PLACE_PICKER_REQUEST && resultCode == RESULT_OK) {
-            Place place = PlacePicker.getPlace(this, data);
-            if (place == null) {
-                Log.i(LOG_TAG, "No place selected");
-                return;
+        if (requestCode == ADD_PLACE_REQUEST) {
+            String placeName = data.getStringExtra("placeName");
+            currentMarkerPosition = data.getParcelableExtra("currentMarkerPosition");
+            if (resultCode == RESULT_OK) {
+                ContentValues values = new ContentValues();
+                values.put(WeatherContract.PlaceEntry.COLUMN_PLACE_NAME, placeName);
+                double latitude = new BigDecimal(currentMarkerPosition.latitude).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                double longitude = new BigDecimal(currentMarkerPosition.longitude).setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
+                values.put(WeatherContract.PlaceEntry.COLUMN_LATITUDE, latitude);
+                values.put(WeatherContract.PlaceEntry.COLUMN_LONGITUDE, longitude);
+
+                Uri newUri = getContentResolver().insert(WeatherContract.PlaceEntry.CONTENT_URI, values);
             }
-
-            String cityName = place.getName().toString();
-            List<Integer> placeTypes = place.getPlaceTypes();
-            if (!placeTypes.contains(TYPE_LOCALITY)) {
-                Log.d(LOG_TAG, "Only cities should be selected");
-                final AlertDialog.Builder builder = new AlertDialog.Builder(PlacesActivity.this);
-                builder.setMessage(getString(R.string.info_select_cities));
-
-                builder.setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-                return;
-            }
-
-            ContentValues values = new ContentValues();
-            values.put(PlaceEntry.COLUMN_CITY_NAME, cityName);
-            Uri newUri = getContentResolver().insert(PlaceEntry.CONTENT_URI, values);
         }
     }
 
@@ -133,7 +137,9 @@ public class PlacesActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int i, @Nullable Bundle bundle) {
         String[] projection = {
                 PlaceEntry._ID,
-                PlaceEntry.COLUMN_CITY_NAME};
+                PlaceEntry.COLUMN_PLACE_NAME,
+                PlaceEntry.COLUMN_LATITUDE,
+                PlaceEntry.COLUMN_LONGITUDE};
 
         return new CursorLoader(this,
                 PlaceEntry.CONTENT_URI,
@@ -168,4 +174,23 @@ public class PlacesActivity extends AppCompatActivity
         Log.e(LOG_TAG, "API Client Connection Failed!");
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        currentMarkerPosition = new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
 }

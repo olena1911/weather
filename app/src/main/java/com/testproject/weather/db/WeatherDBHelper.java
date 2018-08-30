@@ -28,16 +28,18 @@ public class WeatherDBHelper extends SQLiteOpenHelper {
         String SQL_CREATE_WEATHER_TABLE =  "CREATE TABLE " + WeatherEntry.TABLE_NAME + " ("
                 + WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + WeatherEntry.COLUMN_TIME + " INTEGER, "
-                + WeatherEntry.COLUMN_CITY_NAME + " TEXT NOT NULL, "
+                + WeatherEntry.COLUMN_PLACE_ID + " INTEGER NOT NULL, "
                 + WeatherEntry.COLUMN_TEMPERATURE + " REAL NOT NULL, "
                 + WeatherEntry.COLUMN_PRESSURE + " REAL NOT NULL, "
                 + WeatherEntry.COLUMN_HUMIDITY + " REAL NOT NULL, "
-                + WeatherEntry.COLUMN_WEATHER_ICON_ID + " REAL NOT NULL, "
+                + WeatherEntry.COLUMN_WEATHER_ICON_ID + " TEXT NOT NULL, "
                 + WeatherEntry.COLUMN_WIND_SPEED + " REAL NOT NULL)";
 
         String SQL_CREATE_PLACES_TABLE = "CREATE TABLE " + PlaceEntry.TABLE_NAME + " ("
                 + PlaceEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + PlaceEntry.COLUMN_CITY_NAME + " TEXT NOT NULL);";
+                + PlaceEntry.COLUMN_PLACE_NAME + " TEXT NOT NULL, "
+                + PlaceEntry.COLUMN_LATITUDE + " REAL NOT NULL, "
+                + PlaceEntry.COLUMN_LONGITUDE + " REAL NOT NULL);";
 
         db.execSQL(SQL_CREATE_WEATHER_TABLE);
         Log.i(LOG_TAG, "Weather table is created");

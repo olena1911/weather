@@ -21,6 +21,10 @@
     <string name="btn_cancel">Cancel</string>
     <string name="btn_check_weather">Check weather</string>
     <string name="btn_add_place">Add place</string>
-    <string name="title_activity_map">Map</string>
+    <string name="title_unknown_city">Unknown city</string>
+
+
+    <string name="text_place_name">Place name</string>
+    <string name="btn_add">Add</string>
 
 </resources>

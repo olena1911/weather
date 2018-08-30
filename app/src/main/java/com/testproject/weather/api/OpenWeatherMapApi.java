@@ -11,5 +11,7 @@ import retrofit2.http.Query;
  */
 public interface OpenWeatherMapApi {
     @GET("data/2.5/weather?units=metric")
-    Call<Weather> getCurrentWeather(@Query("q") String cityName, @Query("appid") String appid);
+    Call<Weather> getCurrentWeather(@Query("lat") String latitude,
+                                    @Query("lon") String longitude,
+                                    @Query("appid") String appid);
 }

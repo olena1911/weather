@@ -34,15 +34,26 @@ public class PlacesCursorAdapter extends RecyclerView.Adapter<PlacesCursorAdapte
             return;
         }
 
-        int cityNameColumnIndex = mCursor.getColumnIndex(PlaceEntry.COLUMN_CITY_NAME);
-        final String cityName = mCursor.getString(cityNameColumnIndex);
-        placeViewHolder.fillFields(cityName);
+        int placeIdColumnIndex = mCursor.getColumnIndex(PlaceEntry._ID);
+        int placeNameColumnIndex = mCursor.getColumnIndex(PlaceEntry.COLUMN_PLACE_NAME);
+        int latitudeColumnIndex = mCursor.getColumnIndex(PlaceEntry.COLUMN_LATITUDE);
+        int longitudeColumnIndex = mCursor.getColumnIndex(PlaceEntry.COLUMN_LONGITUDE);
+
+        final int placeId = mCursor.getInt(placeIdColumnIndex);
+        final String placeName = mCursor.getString(placeNameColumnIndex);
+        final double latitude = mCursor.getDouble(latitudeColumnIndex);
+        final double longitude = mCursor.getDouble(longitudeColumnIndex);
+
+        placeViewHolder.fillFields(placeName, latitude, longitude);
 
         placeViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent weatherIntent = new Intent(mContext, WeatherActivity.class);
-                weatherIntent.putExtra("cityName", cityName);
+                weatherIntent.putExtra("placeId", placeId);
+                weatherIntent.putExtra("placeName", placeName);
+                weatherIntent.putExtra("latitude", latitude);
+                weatherIntent.putExtra("longitude", longitude);
                 mContext.startActivity(weatherIntent);
             }
         });
@@ -68,16 +79,19 @@ public class PlacesCursorAdapter extends RecyclerView.Adapter<PlacesCursorAdapte
 
     public class PlaceViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView cityNameTextView;
+        private TextView placeNameTextView;
+        private TextView placeCoordinatesTextView;
 
         public PlaceViewHolder(View itemView) {
             super(itemView);
-            cityNameTextView = itemView.findViewById(R.id.places_city_name);
+            placeNameTextView = itemView.findViewById(R.id.text_place_name);
+            placeCoordinatesTextView = itemView.findViewById(R.id.text_place_coordinates);
 
         }
 
-        public void fillFields(String cityName) {
-            cityNameTextView.setText(cityName);
+        public void fillFields(String placeName, double latitude, double longitude) {
+            placeNameTextView.setText(placeName);
+            placeCoordinatesTextView.setText("[" + latitude + ", " + longitude + "]");
         }
     }
 }
