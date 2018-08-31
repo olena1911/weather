@@ -52,6 +52,7 @@ public class PlacesActivity extends AppCompatActivity
 
     private static final int PLACES_LOADER_ID = 0;
     private static final int ADD_PLACE_REQUEST = 100;
+    private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +108,9 @@ public class PlacesActivity extends AppCompatActivity
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Need location permission", Toast.LENGTH_LONG).show();
-            return;
+            ActivityCompat.requestPermissions(PlacesActivity.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_FINE_LOCATION);
         }
         Intent mapIntent = new Intent(this, MapActivity.class);
         mapIntent.putExtra("currentMarkerPosition", currentMarkerPosition);
