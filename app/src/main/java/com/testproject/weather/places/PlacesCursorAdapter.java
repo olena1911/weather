@@ -1,4 +1,4 @@
-package com.testproject.weather;
+package com.testproject.weather.places;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.testproject.weather.R;
+import com.testproject.weather.weatherlist.WeatherActivity;
 
 import static com.testproject.weather.db.WeatherContract.PlaceEntry;
 
