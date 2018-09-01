@@ -1,23 +1,18 @@
 # WeatherApp
 
-Android app that gives information about current weather in selected cities.
+Android app that gives information about current weather in selected places.
 
 ## Description
 
 WeatherApp has 3 screens:
 
-* Places: a list of selected cities. Press "Add place" button to add a new city.
-* Map: a map to select a city. Note that only cities can be selected.
+* Places: a list of selected places. Press "Add place" button to add a new place.
+* Map: a map to select a place. New place has name of city and country or "New place" + coordinates if the coordinates don't indicate a city.
 * Weather: a list of requested weather conditions. Press "Check weather" to add current weather information.
 
 ## Used technologies and libraries
 
 * Retrofit 2
-* Android Places API
+* GoogleMaps API
 * openweathermap API
 * Picasso
-
-## Notes
-
-* Only cities can be selected in the Map screen.
-* Your phone should use English settings.
